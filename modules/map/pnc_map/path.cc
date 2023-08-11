@@ -624,6 +624,21 @@ double Path::GetSFromIndex(const InterpolatedIndex& index) const {
   return accumulated_s_[index.id] + index.offset;
 }
 
+// if (s <= 0.0)：首先判断给定的路径长度是否小于等于0，如果是，则返回第一个插值索引 {0, 0.0}，表示车辆在路径的起点。
+
+// CHECK_GT(num_points_, 0)：确保路径上的点的数量 num_points_ 大于0，即路径非空。
+
+// if (s >= length_)：判断给定的路径长度是否大于等于路径的总长度 length_，如果是，则返回最后一个插值索引 {num_points_ - 1, 0.0}，表示车辆在路径的终点。
+
+// const int sample_id = static_cast<int>(s / kSampleDistance)：根据给定的路径长度 s，计算出对应的采样点索引 sample_id，这里 kSampleDistance 是一个常量，表示采样点之间的距离。
+
+// if (sample_id >= num_sample_points_)：判断计算得到的采样点索引是否大于等于采样点的总数 num_sample_points_，如果是，则返回最后一个插值索引 {num_points_ - 1, 0.0}。
+
+// 计算下一个采样点索引 next_sample_id。
+
+// 计算在当前采样点索引范围内的起始低位索引 low 和结束高位索引 high。
+
+// 进入一个循环，不断进行二分查找，寻找在路径上距离 s 最近的点。在循环中，不断更新 low 和 high，直到 low + 1 不小于 high。查找的目标是找到在路径上紧邻距离 s 的两个点之间的索引。
 InterpolatedIndex Path::GetIndexFromS(double s) const {
   if (s <= 0.0) {
     return {0, 0.0};
@@ -636,6 +651,7 @@ InterpolatedIndex Path::GetIndexFromS(double s) const {
   if (sample_id >= num_sample_points_) {
     return {num_points_ - 1, 0.0};
   }
+  // 二分查找，找到和sample_id最近的一个path point
   const int next_sample_id = sample_id + 1;
   int low = last_point_index_[sample_id];
   int high = (next_sample_id < num_sample_points_
@@ -649,6 +665,8 @@ InterpolatedIndex Path::GetIndexFromS(double s) const {
       high = mid;
     }
   }
+  // 最终返回一个插值索引，其中 low 是找到的最近点的索引
+  // s - accumulated_s_[low] 是距离最近点的累积距离
   return {low, s - accumulated_s_[low]};
 }
 

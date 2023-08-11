@@ -364,6 +364,7 @@ class Path {
   PathApproximation approximation_;
 
   // Sampled every fixed length.
+  // 道路总长度 / kSampleDistance
   int num_sample_points_ = 0;
   std::vector<double> lane_left_width_;
   std::vector<double> lane_right_width_;

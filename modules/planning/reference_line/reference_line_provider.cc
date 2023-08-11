@@ -853,9 +853,11 @@ void ReferenceLineProvider::GetAnchorPoints(
   CHECK_NOTNULL(anchor_points);
   // interval为采样间隔，默认为5m
   const double interval = smoother_config_.max_constraint_interval();
+  // 基于采样间隔，求出anchor_point的个数，小于5m的时候个数加+1
   int num_of_anchors =
       std::max(2, static_cast<int>(reference_line.Length() / interval + 0.5));
   std::vector<double> anchor_s;
+  // 按照采样点个数把总长度一致等分，并把每个点的s，放到一个数组里
   common::util::uniform_slice(0.0, reference_line.Length(), num_of_anchors - 1,
                               &anchor_s);
   for (const double s : anchor_s) {
