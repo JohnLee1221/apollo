@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package apollo.common;
+
+import "modules/common_msgs/chassis_msgs/chassis.proto";
+import "modules/common_msgs/localization_msgs/pose.proto";
+
+message VehicleState {
+  optional double x = 1 [default =0.0];            // 车辆世界ENU坐标系x坐标
+  optional double y = 2 [default =0.0];            // 车辆世界ENU坐标系y坐标
+  optional double z = 3 [default =0.0];            // 车辆世界ENU坐标系z坐标
+  optional double timestamp = 4 [default =0.0];    // 时间戳信息
+  optional double roll = 5 [default =0.0];         // 车辆姿态相对于世界坐标系x轴旋转角度
+  optional double pitch = 6 [default =0.0];        // 车辆姿态相对于世界坐标系y轴旋转角度
+  optional double yaw = 7 [default =0.0];          // 车辆姿态相对于世界坐标系z轴旋转角度
+  optional double heading = 8 [default =0.0];      // 车辆速度方向
+  optional double kappa = 9 [default =0.0];        // 车辆半径倒数1/R
+  optional double linear_velocity = 10 [default =0.0];      // 车辆线速度
+  optional double angular_velocity = 11 [default =0.0];     // 车辆角速度
+  optional double linear_acceleration = 12 [default =0.0];  // 车辆线加速度
+  optional apollo.canbus.Chassis.GearPosition gear = 13;    // 车辆齿轮状态，包含前进、倒车。停车、低速等状态
+  optional apollo.canbus.Chassis.DrivingMode driving_mode = 14;  // 驾驶状态，包含手动驾驶、自动驾驶、转向、刹车与油门等状态
+  optional apollo.localization.Pose pose = 15;     // 车辆姿态，包含坐标，局部到世界坐标系变换矩阵，线速度(矢量)，线加速度(矢量)等信息。
+  optional double steering_percentage = 16;
+}
